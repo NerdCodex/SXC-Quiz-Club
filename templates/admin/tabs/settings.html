@@ -1,0 +1,172 @@
+<h4>Event Settings</h4>
+        <hr>
+        <!-- Add your settings form here -->
+        <form method="POST" id="settings-form" action="{{ url_for('admin.update_event', eid=event.eid) }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="mb-3">
+            <label for="slugurl" class="form-label"><b>Quiz Link</b></label>
+            <div class="input-group">
+              <input type="text" id="slugurl" class="form-control" value="{{ request.url_root }}quiz/{{ event.slugurl }}" readonly>
+              <button class="btn btn-outline-secondary" type="button" onclick="copySlugUrl()" title="Copy to clipboard">
+                <i class="bi bi-clipboard"></i>
+              </button>
+            </div>
+            <div id="copyAlert" class="form-text text-success" style="display:none; justify-content: right;"><h5>Copied!</h5></div>
+          </div>
+          <hr>
+          <div class="mb-3">
+            <label class="form-label">Update Event Banner</label>
+            <div class="image-upload-box" id="eventDropArea">
+              <span class="upload-placeholder" id="eventUploadPlaceholder" style="{% if event.event_banner %} display: none;{% endif %}">+</span>
+              {% if event.event_banner %}
+                <img id="eventPreviewImage" src="data:image/jpeg;base64,{{ event.event_banner | b64encode }}" style="display:block;" />
+                <button type="button" class="remove-image-btn" id="eventRemoveImageBtn" onclick="removeEventSelectedImage()" style="display: block;">×</button>
+              {% else %}
+                <img id="eventPreviewImage" src="#" alt="Preview" style="display: none;" />
+                <button type="button" class="remove-image-btn" id="eventRemoveImageBtn" onclick="removeEventSelectedImage()" style="display: none;">×</button>
+              {% endif %}
+            </div>
+            <input type="file" id="event_banner" name="event_banner" accept="image/*" style="display: none;">
+            <input type="hidden" name="remove_event_image" id="removeEventImageFlag" value="0">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Name</label>
+            <input type="text" name="event_name" class="form-control" value="{{ event.event_name }}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="event_description" class="form-control">{{ event.event_description }}</textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Event Date</label>
+            <input type="date" name="event_date" class="form-control" value="{{ event.event_date }}">
+            <div class="invalid-feedback">
+              Event date must be today or later.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Starting Time</label>
+            <input type="time" name="event_starttime" class="form-control" value="{{ event.event_starttime }}" required>
+            <div class="invalid-feedback">Start time must be earlier than end time.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Ending Time</label>
+            <input type="time" name="event_endtime" class="form-control" value="{{ event.event_endtime }}" required>
+            <div class="invalid-feedback">Start time must be earlier than end time.</div>
+          </div>
+          
+          <button class="btn">Update</button>
+        </form>
+    </div>
+  </div>
+
+<script>
+  const eventDropArea = document.getElementById("eventDropArea");
+  const eventFileInput = document.getElementById("event_banner");
+  const eventPreviewImage = document.getElementById("eventPreviewImage");
+  const eventUploadPlaceholder = document.getElementById("eventUploadPlaceholder");
+  const eventRemoveImageBtn = document.getElementById("eventRemoveImageBtn");
+
+  if (eventDropArea && eventFileInput) {
+    eventDropArea.addEventListener("click", () => eventFileInput.click());
+
+    eventDropArea.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      eventDropArea.classList.add("dragover");
+    });
+
+    eventDropArea.addEventListener("dragleave", () => {
+      eventDropArea.classList.remove("dragover");
+    });
+
+    eventDropArea.addEventListener("drop", (e) => {
+      e.preventDefault();
+      eventDropArea.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        eventFileInput.files = e.dataTransfer.files;
+        showEventImage(file);
+      }
+    });
+
+    eventFileInput.addEventListener("change", () => {
+      const file = eventFileInput.files[0];
+      if (file) {
+        showEventImage(file);
+      }
+    });
+  }
+
+  function showEventImage(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      eventPreviewImage.src = e.target.result;
+      eventPreviewImage.style.display = "block";
+      eventUploadPlaceholder.style.display = "none";
+      eventRemoveImageBtn.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+    document.getElementById("removeEventImageFlag").value = "0";
+  }
+
+  function removeEventSelectedImage() {
+    eventFileInput.value = "";
+    eventPreviewImage.src = "#";
+    eventPreviewImage.style.display = "none";
+    eventUploadPlaceholder.style.display = "block";
+    eventRemoveImageBtn.style.display = "none";
+    document.getElementById("removeEventImageFlag").value = "1";
+  }
+
+  if (eventRemoveImageBtn) {
+    eventRemoveImageBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // prevents bubbling up to dropArea
+      removeEventSelectedImage();
+    });
+  }
+  document.getElementById("settings-form").addEventListener("submit", function (e) {
+    const dateInput = document.querySelector("input[name='event_date']");
+    const startTimeInput = document.querySelector("input[name='event_starttime']");
+    const endTimeInput = document.querySelector("input[name='event_endtime']");
+
+    const today = new Date();
+    const inputDate = new Date(dateInput.value);
+    console.log(`Input Date: ${inputDate.toDateString()}`)
+
+    // Clear previous error states
+    dateInput.classList.remove("is-invalid");
+    startTimeInput.classList.remove("is-invalid");
+    endTimeInput.classList.remove("is-invalid");
+
+    let hasError = false;
+
+    // Validate event_date is today or later
+    if (inputDate.setHours(0,0,0,0) < today.setHours(0,0,0,0)) {
+      dateInput.classList.add("is-invalid");
+      hasError = true;
+    }
+
+    // Validate start time < end time
+    const startTime = startTimeInput.value;
+    const endTime = endTimeInput.value;
+
+    if (startTime && endTime && startTime >= endTime) {
+      startTimeInput.classList.add("is-invalid");
+      endTimeInput.classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (hasError) {
+      e.preventDefault(); // Stop form submission
+    }
+  });
+
+  function copySlugUrl() {
+    const input = document.getElementById("slugurl");
+    navigator.clipboard.writeText(input.value).then(() => {
+      const alertBox = document.getElementById("copyAlert");
+      alertBox.style.display = "inline";
+      setTimeout(() => alertBox.style.display = "none", 4000);
+    });
+  }
+</script>

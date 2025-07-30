@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sxc Quiz Club - Admin</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/events.css') }}"
+    />
+  </head>
+  <body>
+    {% include 'admin/components/navbar.html' %}
+    <!-- Event List -->
+    <div class="event-grid">
+      {% for event in events %}
+      <div class="event-card">
+        <img
+          src="data:image/jpeg;base64,{{ event.banner_base64 }}"
+          alt="Event Banner"
+        />
+        <div class="content">
+          <h3>{{ event.event_name }}</h3>
+          <p class="description">{{ event.event_description }}</p>
+          <p>
+            <strong>Date:</strong> {{ event.event_date.strftime('%d %b %Y') }}
+          </p>
+          <p>
+            <strong>Time:</strong> {{ event.event_starttime.strftime('%H:%M') }}
+            - {{ event.event_endtime.strftime('%H:%M') }}
+          </p>
+          <div style="display: flex">
+            <form
+              method="get"
+              action="{{ url_for('admin.edit_event', eid=event.eid) }}"
+            >
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <button
+                type="submit"
+                class="btn"
+                style="background-color: #6a1b1f; margin-top: 10px"
+              >
+                Edit
+              </button>
+            </form>
+            <form
+              method="post"
+              action="{{ url_for('admin.delete_event', eid=event.eid) }}"
+            >
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <button
+                type="submit"
+                class="btn"
+                style="
+                  background-color: #555;
+                  margin-top: 10px;
+                  margin-left: 20px;
+                "
+                onclick="return confirm('Are you sure you want to delete this question?')"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Adding a new Event Model -->
+    <div class="modal" id="eventModal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Create New Event</h2>
+        <form
+          method="POST"
+          id="event-form"
+          action="{{ url_for('admin.events') }}"
+          enctype="multipart/form-data"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <label for="event_name">Event Name</label>
+          <input type="text" name="event_name" required />
+
+          <label for="event_description">Event Description</label>
+          <textarea name="event_description" rows="3" required></textarea>
+
+          <label for="event_date">Date</label>
+          <input type="date" name="event_date" required />
+          <div class="invalid-feedback">Event date must be today or later.</div>
+
+          <label for="event_starttime">Start Time</label>
+          <input type="time" name="event_starttime" required />
+          <div class="invalid-feedback">
+            Start time must be earlier than end time.
+          </div>
+
+          <label for="event_endtime">End Time</label>
+          <input type="time" name="event_endtime" required />
+          <div class="invalid-feedback">
+            Start time must be earlier than end time.
+          </div>
+
+          <label for="event_banner" class="form-label">Banner Image</label>
+          <div class="image-upload-box" id="eventDropArea">
+            <span class="upload-placeholder" id="eventUploadPlaceholder"
+              >+</span
+            >
+            <img
+              id="eventPreviewImage"
+              src="#"
+              alt="Preview"
+              style="display: none"
+            />
+            <button
+              type="button"
+              class="remove-image-btn"
+              id="eventRemoveImageBtn"
+              onclick="removeEventSelectedImage()"
+              style="display: none"
+            >
+              ×
+            </button>
+          </div>
+          <input
+            type="file"
+            id="event_banner"
+            name="event_banner"
+            accept="image/*"
+            required
+            style="display: none"
+          />
+          <br />
+          <button type="submit" class="btn">Create</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab btn" onclick="openModal()">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+
+    <script>
+      function openModal() {
+        document.getElementById("eventModal").style.display = "block";
+      }
+      function closeModal() {
+        document.getElementById("eventModal").style.display = "none";
+      }
+      window.onclick = function (event) {
+        if (event.target == document.getElementById("eventModal")) {
+          closeModal();
+        }
+      };
+      const eventDropArea = document.getElementById("eventDropArea");
+      const eventFileInput = document.getElementById("event_banner");
+      const eventPreviewImage = document.getElementById("eventPreviewImage");
+      const eventUploadPlaceholder = document.getElementById(
+        "eventUploadPlaceholder"
+      );
+      const eventRemoveImageBtn = document.getElementById(
+        "eventRemoveImageBtn"
+      );
+
+      eventDropArea.addEventListener("click", () => eventFileInput.click());
+
+      eventDropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        eventDropArea.classList.add("dragover");
+      });
+
+      eventDropArea.addEventListener("dragleave", () => {
+        eventDropArea.classList.remove("dragover");
+      });
+
+      eventDropArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        eventDropArea.classList.remove("dragover");
+        const file = e.dataTransfer.files[0];
+        if (file) {
+          eventFileInput.files = e.dataTransfer.files;
+          showEventImage(file);
+        }
+      });
+
+      eventFileInput.addEventListener("change", () => {
+        const file = eventFileInput.files[0];
+        if (file) {
+          showEventImage(file);
+        }
+      });
+
+      function showEventImage(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          eventPreviewImage.src = e.target.result;
+          eventPreviewImage.style.display = "block";
+          eventUploadPlaceholder.style.display = "none";
+          eventRemoveImageBtn.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function removeEventSelectedImage() {
+        eventFileInput.value = "";
+        eventPreviewImage.src = "#";
+        eventPreviewImage.style.display = "none";
+        eventUploadPlaceholder.style.display = "block";
+        eventRemoveImageBtn.style.display = "none";
+      }
+
+      eventRemoveImageBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        removeEventSelectedImage();
+      });
+
+      document
+        .getElementById("event-form")
+        .addEventListener("submit", function (e) {
+          const dateInput = document.querySelector("input[name='event_date']");
+          const startTimeInput = document.querySelector(
+            "input[name='event_starttime']"
+          );
+          const endTimeInput = document.querySelector(
+            "input[name='event_endtime']"
+          );
+
+          const today = new Date();
+          const inputDate = new Date(dateInput.value);
+
+          // Clear previous error states
+          dateInput.classList.remove("is-invalid");
+          startTimeInput.classList.remove("is-invalid");
+          endTimeInput.classList.remove("is-invalid");
+
+          let hasError = false;
+
+          // Validate event_date is today or later
+          if (inputDate.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)) {
+            dateInput.classList.add("is-invalid");
+            hasError = true;
+          }
+
+          // Validate start time < end time
+          const startTime = startTimeInput.value;
+          const endTime = endTimeInput.value;
+
+          if (startTime && endTime && startTime >= endTime) {
+            startTimeInput.classList.add("is-invalid");
+            endTimeInput.classList.add("is-invalid");
+            hasError = true;
+          }
+
+          if (hasError) {
+            e.preventDefault(); // Stop form submission
+          }
+        });
+    </script>
+  </body>
+</html>

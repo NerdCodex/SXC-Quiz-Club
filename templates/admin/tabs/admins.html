@@ -1,0 +1,43 @@
+{% if self_delete_attempt %}
+<div id="self-delete-warn" class="alert alert-danger text-center mt-3">
+  ⚠️ You cannot delete your own admin account.
+</div>
+{% endif %}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in admins %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ admin.admin_name }}</td>
+          <td>{{ admin.admin_email }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('admin.delete_admin', aid=admin.aid) }}" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this admin?')">
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+
+<script>
+  setTimeout(() => {
+    const warn = document.getElementById("self-delete-warn");
+    if (warn) warn.remove();
+  }, 3000);
+</script>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ event.event_name }} - Waiting Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/global.css') }}"
+    />
+
+    <style>
+      body {
+        background: linear-gradient(to bottom right, #f8f9fa, #e0e0e0);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .content-wrapper {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .waiting-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .waiting-card h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .waiting-card h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .waiting-card p {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+
+      .status-message {
+        font-size: 1.25rem;
+        font-weight: bold;
+      }
+
+      .text-starting {
+        color: #198754;
+      }
+
+      .text-ended {
+        color: #dc3545;
+      }
+
+      .text-countdown {
+        color: #6a1b1a;
+      }
+
+      .spinner {
+        margin-top: 2rem;
+        color: #6a1b1a;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Include Navbar -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Center Content -->
+    <div class="content-wrapper">
+      <div class="waiting-card">
+        <h2 id="main-title">{{ event.event_name }}</h2>
+        <p><strong>Date: </strong> {{ event.event_date }}</p>
+        <p>
+          <strong>Timing: </strong> {{ event.event_starttime.strftime('%I:%M
+          %p') }} - {{ event.event_endtime.strftime('%I:%M %p') }}
+        </p>
+        <h3 id="status-message" class="status-message text-countdown">
+          Loading...
+        </h3>
+        <div class="spinner-border spinner" role="status" id="spinner">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Footer -->
+    {% include 'components/footer.html' %}
+
+    <script>
+      function countdown() {
+        const start = new Date(
+          "{{ event.event_date }}T{{ event.event_starttime }}"
+        );
+        const end = new Date(
+          "{{ event.event_date }}T{{ event.event_endtime }}"
+        );
+        const now = new Date();
+
+        const title = document.getElementById("main-title");
+        const status = document.getElementById("status-message");
+        const spinner = document.getElementById("spinner");
+
+        if (now >= end) {
+          title.innerText = "{{ event.event_name }} has ended";
+          status.innerText = "Event Ended";
+          status.className = "status-message text-ended";
+          spinner.style.display = "none";
+          return;
+        }
+
+        if (now >= start && now < end) {
+          title.innerText = "{{ event.event_name }} is starting now";
+          status.innerText = "Starting...";
+          status.className = "status-message text-starting";
+          spinner.style.display = "inline-block";
+
+          if (!localStorage.getItem("quiz_reloaded")) {
+            localStorage.setItem("quiz_reloaded", "true");
+            location.reload();
+          }
+          return;
+        }
+
+        const diff = start - now;
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / (3600 * 24));
+        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        let timeString = "";
+        if (days > 0) timeString += `${days}d `;
+        if (hours > 0 || days > 0) timeString += `${hours}h `;
+        timeString += `${minutes}m ${seconds}s`;
+
+        title.innerText = "{{ event.event_name }} will start soon";
+        status.innerText = timeString;
+        status.className = "status-message text-countdown";
+        spinner.style.display = "inline-block";
+
+        setTimeout(countdown, 1000);
+      }
+
+      window.onload = function () {
+        localStorage.removeItem("quiz_reloaded");
+        countdown();
+      };
+    </script>
+  </body>
+</html>

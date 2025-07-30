@@ -1,0 +1,16 @@
+<ul class="nav nav-tabs custom-tabs">
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'admins' %}active{% endif %}"
+      href="{{ url_for('admin.manage', tab='admins') }}"
+      >Admins</a
+    >
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'resetpassword' %}active{% endif %}"
+      href="{{ url_for('admin.manage', tab='resetpassword') }}"
+      >Reset Password</a
+    >
+  </li>
+</ul>

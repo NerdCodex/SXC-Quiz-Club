@@ -1,0 +1,190 @@
+/* Base image styling */
+.carousel-inner img {
+  max-height: 500px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Animation for first image */
+.carousel-item:nth-child(1) img {
+  animation: fadeInZoom 1.5s ease-in-out;
+}
+
+/* Animation for second image */
+.carousel-item:nth-child(2) img {
+  animation: slideInLeft 1.5s ease-in-out;
+}
+
+/* Animation for third image */
+.carousel-item:nth-child(3) img {
+  animation: rotateIn 1.5s ease-in-out;
+}
+
+/* Keyframes */
+@keyframes fadeInZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rotateIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+.objectives-section {
+  background-color: #fff;
+  padding: 60px 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.objectives-section h2 {
+  text-align: center;
+  font-weight: bold;
+  color: #6a1b1a;
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+.objective-item {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  animation: fadeInUp 0.7s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.objective-item .objective-icon {
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  color: #0d6efd;
+  margin-right: 12px;
+  margin-top: 3px;
+}
+
+.objective-item .objective-text {
+  font-size: 1.05rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+@media (max-width: 576px) {
+  .carousel-inner img {
+    max-height: 280px;
+  }
+
+  .objective-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .objective-item .objective-text {
+    font-size: 1rem;
+  }
+
+  .timeline {
+    padding-left: 1.2rem;
+  }
+
+  .timeline-dot {
+    width: 12px;
+    height: 12px;
+    left: -7px;
+  }
+}
+
+.objectives-section table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  vertical-align: top;
+  font-size: 1.15rem;
+}
+.event-logo-bar {
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #6a1b1a;
+  border-bottom: 2px solid #ffc107;
+}
+
+.college-logo {
+  height: 60px;
+  width: auto;
+}
+
+.quiz-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.scrolling-text-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 84%;
+}
+
+.scrolling-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scroll-left 15s linear infinite;
+  font-weight: 500;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .quizclub-logo {
+    height: 40px;
+  }
+
+  .quiz-title {
+    font-size: 1rem;
+  }
+
+  .scrolling-text-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .event-logo-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}

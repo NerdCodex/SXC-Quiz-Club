@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Credentials</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles/events.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/events.css') }}">
+  </head>
+  <style>
+    .fab {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  </style>
+  <body>
+    {% include 'admin/components/navbar.html' %}
+    
+    <button class="fab btn" onclick="openModal()">
+      <i class="bi bi-plus-lg"></i>
+    </button>
+    <div class="modal" id="adminModal" style="display: none">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content p-4 bg-white rounded shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="adminModalTitle">Add New Admin</h5>
+        <button type="button" class="btn-close" onclick="closeAdminModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form action="{{ url_for('admin.add_admin') }}" method="POST">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div class="mb-3">
+            <label for="admin_name" class="form-label">Admin Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="admin_name"
+              name="admin_name"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="admin_email" class="form-label">Email</label>
+            <input
+              type="email"
+              class="form-control"
+              id="admin_email"
+              name="admin_email"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="admin_password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="admin_password"
+              name="admin_password"
+              minlength="6"
+              required
+            />
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Add Admin</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeAdminModal()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+    <div class="container mt-4">
+        <br>
+
+        {% include "components/manage_tabs.html" %}
+
+        <div class="tab-content mt-4">
+        {% if active_tab == 'admins' %}
+            {% include "admin/tabs/admins.html" %}
+
+        {% elif active_tab == 'resetpassword' %}
+            {% include "admin/tabs/reset.html" %}
+
+        {% endif %}
+    </div>
+  </body>
+
+  <script>
+    function openModal() {
+      document.getElementById("adminModal").style.display = "block";
+      document.getElementById("preview-img").src = "";
+    }
+
+    function closeAdminModal() {
+    document.getElementById("adminModal").style.display = "none";
+  }
+  </script>
+</html>
