@@ -100,6 +100,10 @@ def quiz(slug):
         cache.set(cache_key, questions)
 
     if request.method == "POST":
+        if event.event_date != today or not (event.event_starttime <= current_time <= event.event_endtime):
+            flash("Late Submission your response will not be taken into account.", "danger")
+            return render_template("public/waiting.html", event=event)
+        
         name = request.form.get("name")
         email = request.form.get("email")
         regno = request.form.get("regno")

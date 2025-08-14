@@ -86,6 +86,48 @@
     <!-- Include Navbar -->
     {% include 'components/navbar.html' %}
 
+    {% set flashed = get_flashed_messages(with_categories=true) %}
+    {% if flashed|selectattr("0", "equalto", "danger")|list|length > 0 %}
+    <!-- Flash Message Modal -->
+    <div
+      class="modal fade"
+      id="flashModal"
+      tabindex="-1"
+      aria-labelledby="flashModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-danger">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="flashModalLabel">Submission Error</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {% for category, message in flashed %}
+              {% if category == 'danger' %}
+                <p>{{ message }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Center Content -->
     <div class="content-wrapper">
       <div class="waiting-card">
@@ -108,6 +150,7 @@
     {% include 'components/footer.html' %}
 
     <script>
+
       function countdown() {
         const start = new Date(
           "{{ event.event_date }}T{{ event.event_starttime }}"
@@ -166,7 +209,13 @@
       window.onload = function () {
         localStorage.removeItem("quiz_reloaded");
         countdown();
+
+        {% if flashed|selectattr("0", "equalto", "danger")|list|length > 0 %}
+        const modal = new bootstrap.Modal(document.getElementById('flashModal'));
+        modal.show();
+        {% endif %}
       };
+
     </script>
   </body>
 </html>
