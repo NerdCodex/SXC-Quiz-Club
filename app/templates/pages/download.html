@@ -1,0 +1,65 @@
+{% extends 'components/base.html' %} 
+{% block title %}Sxc Quiz Club - Home {% endblock %} 
+{% block csslink %} 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/download.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    <h2>SXC QUIZ CLUB</h2>
+    <p>Kindly enter your email properly</p>
+
+    <label for="email">EMAIL</label>
+    <input type="email" id="email" name="email" required/>
+
+    <label for="event">SELECT EVENT</label>
+    <select name="event" id="event" required>
+       <option selected>Select Event</option>
+      {% for event in events %}
+        <option value="{{ event.eid }}">{{ event.event_name }}</option>
+      {% endfor %}
+    </select>
+
+    <button onclick="download()">Download</button>
+</div>
+
+<script>
+async function download() {
+    const email = document.getElementById('email').value.trim();
+    const eid = document.getElementById('event').value;
+
+    if (!email) {
+        alert('Please enter your email');
+        return;
+    }
+    if (!eid) {
+        alert('Please select an event');
+        return;
+    }
+
+    try {
+        const response = await fetch('/download/certificate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ email, eid })
+        });
+
+        const data = await response.json();
+
+        if (data.certificate_url) {
+            // Open certificate URL in new tab
+            document.getElementById('email').value = "";
+            window.open(data.certificate_url, '_blank');
+        } else {
+            alert('Certificate not found');
+        }
+    } catch (error) {
+        alert('Error fetching certificate');
+        console.error(error);
+    }
+}
+</script>
+{% endblock %}

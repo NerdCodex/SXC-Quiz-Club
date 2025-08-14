@@ -1,0 +1,444 @@
+/* Base image styling */
+.carousel-inner img {
+  max-height: 500px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Animation for first image */
+.carousel-item:nth-child(1) img {
+  animation: fadeInZoom 1.5s ease-in-out;
+}
+
+/* Animation for second image */
+.carousel-item:nth-child(2) img {
+  animation: slideInLeft 1.5s ease-in-out;
+}
+
+/* Animation for third image */
+.carousel-item:nth-child(3) img {
+  animation: rotateIn 1.5s ease-in-out;
+}
+
+/* Keyframes */
+@keyframes fadeInZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rotateIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+.objectives-section {
+  background-color: #fff;
+  padding: 60px 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+}
+
+.objectives-section h2 {
+  text-align: center;
+  font-weight: bold;
+  color: #6a1b1a;
+  margin-bottom: 40px;
+  font-size: 2rem;
+}
+
+.about-section h3 {
+  text-align: center;
+  font-weight: bold;
+  color: #6a1b1a;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  font-size: 2rem;
+}
+
+.objective-item {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  animation: fadeInUp 0.7s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.objective-item .objective-icon {
+  flex-shrink: 0;
+  font-size: 1.5rem;
+  color: #0d6efd;
+  margin-right: 12px;
+  margin-top: 3px;
+}
+
+.objective-item .objective-text {
+  font-size: 1.05rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+@media (max-width: 576px) {
+  .carousel-inner img {
+    max-height: 280px;
+  }
+
+  .objective-item {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .objective-item .objective-text {
+    font-size: 1rem;
+  }
+
+  .timeline {
+    padding-left: 1.2rem;
+  }
+
+  .timeline-dot {
+    width: 12px;
+    height: 12px;
+    left: -7px;
+  }
+}
+
+.objectives-section table td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  vertical-align: top;
+  font-size: 1.15rem;
+}
+.event-logo-bar {
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #6a1b1a;
+  border-bottom: 2px solid #ffc107;
+}
+
+.college-logo {
+  height: 60px;
+  width: auto;
+}
+
+.quiz-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.scrolling-text-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 84%;
+}
+
+.scrolling-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scroll-left 50s linear infinite;
+  font-weight: 500;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .quizclub-logo {
+    height: 40px;
+  }
+
+  .quiz-title {
+    font-size: 1rem;
+  }
+
+  .scrolling-text-container {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .event-logo-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+#eventCarousel {
+    max-height: 700px;
+    overflow:hidden;
+}
+
+
+#eventCarousel .carousel-item img {
+    height: 300px;
+    width: 100%;
+    object-fit: contain;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+#eventCarousel .text-center h5,
+#eventCarousel .text-center p {
+    margin-bottom: 0.4rem;
+}
+
+/* Optional: Remove background from event captions */
+#eventCarousel .carousel-caption {
+    position: static;
+    background: none;
+    padding: 0;
+}
+
+/* Black Carousel Arrows */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-size: 100% 100%;
+    filter: invert(1); /* Turns white icons to black */
+}
+
+/* Optional: make them bigger for visibility */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 2rem;
+    height: 2rem;
+}
+
+
+/* =======================
+   🌟 BUTTON STYLE (Gold)
+   ======================= */
+.btn-gold {
+    background-color: #FFD700;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: #e6c200;
+}
+
+
+
+.quiz-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8rem;
+  color: #fff;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* Modal Styling */
+#quizModal .modal-content {
+  background-color: #fff; /* White background for clean look */
+  border-radius: 12px;
+  border: 2px solid #6a1b1a; /* Matches navbar color */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+#quizModal .modal-header {
+  background-color: #6a1b1a;
+  color: #fff;
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+}
+
+#quizModal .modal-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+#quizModal .btn-close {
+  filter: invert(1); /* Makes close button white */
+}
+
+#quizModal .quiz-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  color: #6a1b1a;
+  letter-spacing: 1px;
+}
+
+#quizModal .quizclub-logo {
+  height: 60px;
+  width: auto;
+}
+
+#quizModal label {
+  font-weight: 600;
+  color: #6a1b1a;
+}
+
+#quizModal .form-control {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+#quizModal .form-check-label {
+  font-weight: 500;
+}
+
+#quizModal .btn-primary {
+  background-color: #6a1b1a;
+  border-color: #6a1b1a;
+  font-weight: 600;
+}
+
+#quizModal .btn-primary:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+
+#quizModal .btn-success {
+  background-color: #6a1b1a;
+  border-color: #6a1b1a;
+  font-weight: 600;
+}
+
+#quizModal .btn-success:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000;
+}
+
+.about-section iframe {
+    width: 100%;
+    height: 600px; /* Adjust based on desired height */
+    border: none; /* Remove default iframe border */
+    border-radius: 8px; /* Matches card corners */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #f9f9f9; /* Light background while loading */
+}
+
+/* Make iframe height adjust on smaller screens */
+@media (max-width: 768px) {
+    .about-section iframe {
+        height: 350px;
+    }
+}
+
+iframe {
+  width: 100%;
+  height: 500px;
+  border: none;
+  border-radius: 10px;
+}
+
+.btn-warning {
+  background-color: #FFD700;
+  border: none;
+  color: #000;
+}
+
+.btn-warning:hover {
+  background-color: #FFC107;
+  color: #000;
+}
+
+/* --- Main Carousel Styling --- */
+#mainCarousel {
+  max-height: 500px; /* Keeps carousel compact */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+#mainCarousel .carousel-item img {
+  height: 500px;
+  object-fit: cover; /* Prevents distortion */
+  object-position: center;
+}
+
+/* Smooth fade transition between slides */
+.carousel-fade .carousel-item {
+  opacity: 0;
+  transition-duration: 1s;
+  transition-property: opacity;
+}
+.carousel-fade .carousel-item.active,
+.carousel-fade .carousel-item-next.carousel-item-start,
+.carousel-fade .carousel-item-prev.carousel-item-end {
+  opacity: 1;
+}
+
+/* Caption styling */
+#mainCarousel .carousel-caption {
+  bottom: 20px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(5px); /* Glass effect */
+  background: rgba(0, 0, 0, 0.4);
+}
+#mainCarousel .carousel-caption h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Indicators styling */
+.carousel-indicators [data-bs-target] {
+  background-color: #ffc107; /* Bootstrap warning yellow */
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.carousel-indicators .active {
+  opacity: 1;
+}
+
+/* Arrows styling - black arrows */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-size: 100% 100%;
+  filter: invert(1);
+}
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}

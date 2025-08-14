@@ -1,0 +1,231 @@
+<!-- Certificates Tab -->
+<div class="container mt-4">
+
+    <!-- Upload Button -->
+    <button class="btn btn-success mb-3" onclick="openModal()">Upload Certificates</button>
+
+    <!-- Delete All Button -->
+    <button class="btn btn-danger mb-3 ms-2" onclick="openDeleteAllModal()">Delete All Certificates</button>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="questionModel" style="display: none;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4 bg-white rounded shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Certificates</h5>
+                    <button type="button" class="btn-close" onclick="closeModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadForm" enctype="multipart/form-data" 
+                        method="POST" 
+                        action="{{ url_for('admin.upload_certificates', eid=event.eid) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <label class="form-label fw-bold">Select Excel File (.xlsx)</label>
+                        <input type="file" name="certificate_file" accept=".xlsx" required class="form-control mb-3" style="display: block;">
+                        <div id="error-message" class="text-danger mb-3"></div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by email...">
+    </div>
+
+    <!-- Certificates Table -->
+    <table class="table table-striped" id="certTable">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Certificate URL</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cert in certificates %}
+            <tr data-id="{{ cert.cid }}">
+                <td class="email">{{ cert.email }}</td>
+                <td class="url"><a href="{{ cert.certificate_url }}" target="_blank">{{ cert.certificate_url }}</a></td>
+                <td>
+                    <button class="btn btn-sm btn-warning editBtn">Edit</button>
+                    <button class="btn btn-sm btn-danger deleteBtn" onclick="deleteCertificate('{{ cert.cid }}')">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Edit Modal -->
+<div class="modal" id="editModal" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5>Edit Certificate</h5>
+                <button type="button" class="btn-close" onclick="closeEditModal()"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="cid" id="editCid">
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" id="editEmail" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Certificate URL</label>
+                        <input type="text" name="certificate_url" id="editUrl" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5>Confirm Delete</h5>
+                <button type="button" class="btn-close" onclick="closeDeleteModal()"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this certificate?</p>
+                <input type="hidden" id="deleteCid">
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Yes</button>
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Confirmation Modal -->
+<div class="modal" id="deleteAllModal" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content p-4">
+            <div class="modal-header">
+                <h5>Confirm Delete All</h5>
+                <button type="button" class="btn-close" onclick="closeDeleteAllModal()"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong>all</strong> certificates?</p>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteAll()">Yes, Delete All</button>
+                <button type="button" class="btn btn-secondary" onclick="closeDeleteAllModal()">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Modal controls
+function openModal() { document.getElementById("questionModel").style.display = "block"; }
+function closeModal() { document.getElementById("questionModel").style.display = "none"; }
+function openEditModal() { document.getElementById("editModal").style.display = "block"; }
+function closeEditModal() { document.getElementById("editModal").style.display = "none"; }
+function openDeleteModal(cid) { 
+    document.getElementById("deleteCid").value = cid;
+    document.getElementById("deleteModal").style.display = "block"; 
+}
+function closeDeleteModal() { document.getElementById("deleteModal").style.display = "none"; }
+function openDeleteAllModal() {
+    document.getElementById("deleteAllModal").style.display = "block";
+}
+function closeDeleteAllModal() {
+    document.getElementById("deleteAllModal").style.display = "none";
+}
+
+// Search functionality
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    let filter = this.value.toLowerCase();
+    document.querySelectorAll("#certTable tbody tr").forEach(row => {
+        let email = row.querySelector(".email").textContent.toLowerCase();
+        row.style.display = email.includes(filter) ? "" : "none";
+    });
+});
+
+// Edit button actions
+document.querySelectorAll(".editBtn").forEach(btn => {
+    btn.addEventListener("click", function() {
+        let row = this.closest("tr");
+        document.getElementById("editCid").value = row.dataset.id;
+        document.getElementById("editEmail").value = row.querySelector(".email").textContent;
+        document.getElementById("editUrl").value = row.querySelector(".url a").textContent;
+        openEditModal();
+    });
+});
+
+// Delete button action
+function deleteCertificate(cid) {
+    openDeleteModal(cid);
+}
+
+function confirmDelete() {
+    let cid = document.getElementById("deleteCid").value;
+    fetch(`/admin/certificates/delete/${cid}`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        }
+    }).then(res => res.json()).then(data => {
+        if (data.status === "success") {
+            let row = document.querySelector(`tr[data-id='${cid}']`);
+            if(row) row.remove();
+            closeDeleteModal();
+        } else {
+            alert(data.message || "Failed to delete certificate");
+        }
+    }).catch(() => alert("Error deleting certificate"));
+}
+
+// Save changes
+document.getElementById("editForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    let cid = document.getElementById("editCid").value;
+    let formData = new FormData(this);
+    fetch(`/admin/certificates/update/${cid}`, {
+        method: "POST",
+        body: formData
+    }).then(res => res.json()).then(data => {
+        if (data.status === "success") {
+            let row = document.querySelector(`tr[data-id='${cid}']`);
+            if(row) {
+                row.querySelector(".email").textContent = document.getElementById("editEmail").value;
+                row.querySelector(".url a").textContent = document.getElementById("editUrl").value;
+                row.querySelector(".url a").href = document.getElementById("editUrl").value;
+            }
+            closeEditModal();
+        } else {
+            alert(data.message || "Failed to update certificate");
+        }
+    }).catch(() => alert("Error updating certificate"));
+});
+
+// Confirm delete all certificates
+function confirmDeleteAll() {
+    fetch(`/admin/certificates/delete_all/{{ event.eid }}`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            // Remove all rows from table
+            document.querySelectorAll("#certTable tbody tr").forEach(row => row.remove());
+            closeDeleteAllModal();
+        } else {
+            alert(data.message || "Failed to delete all certificates");
+        }
+    })
+    .catch(() => alert("Error deleting all certificates"));
+}
+</script>

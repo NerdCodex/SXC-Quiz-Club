@@ -1,0 +1,30 @@
+<ul class="nav nav-tabs custom-tabs">
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'questions' %}active{% endif %}"
+      href="{{ url_for('admin.edit_event', eid=eid, tab='questions') }}"
+      >Questions</a
+    >
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'responses' %}active{% endif %}"
+      href="{{ url_for('admin.edit_event', eid=eid, tab='responses') }}"
+      >Responses</a
+    >
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'certificates' %}active{% endif %}"
+      href="{{ url_for('admin.edit_event', eid=eid, tab='certificates') }}"
+      >Certificates</a
+    >
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if active_tab == 'settings' %}active{% endif %}"
+      href="{{ url_for('admin.edit_event', eid=eid, tab='settings') }}"
+      >Settings</a
+    >
+  </li>
+</ul>

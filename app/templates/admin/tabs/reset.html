@@ -1,0 +1,53 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form method="POST" id="reset" action="">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Password</label>
+        <input type="password" name="currentpassword" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">New Password</label>
+        <input type="password" name="newpassword" id="newpassword" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Re-type New Password</label>
+        <input type="password" name="retypedpassword" id="retypedpassword" class="form-control" required>
+    </div>
+
+    <div class="mb-3 text-danger" id="error-message" style="display: none;"></div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+
+
+<script>
+    document.getElementById("reset").addEventListener("submit", function(e) {
+        const newPassword = document.getElementById("newpassword").value;
+        const retypedPassword = document.getElementById("retypedpassword").value;
+        const errorMessage = document.getElementById("error-message");
+
+        if (newPassword !== retypedPassword) {
+            e.preventDefault();
+            errorMessage.textContent = "New passwords do not match.";
+            errorMessage.style.display = "block";
+        } else {
+            errorMessage.style.display = "none";
+        }
+    });
+</script>

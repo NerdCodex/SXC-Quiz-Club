@@ -1,0 +1,462 @@
+<!-- Floating Action Button -->
+<button class="fab btn" onclick="openModal()">
+  <i class="bi bi-plus-lg"></i>
+</button>
+
+<!-- Question Modal -->
+<div class="modal" id="questionModel" style="display: none">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-4 bg-white rounded shadow">
+      <div class="modal-header">
+        <h5 class="modal-title" id="questionModalTitle">Add New Question</h5>
+        <button type="button" class="btn-close" onclick="closeModal()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          action="{{ url_for('admin.questions_tab', eid=event.eid) }}"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div class="mb-3">
+            <label for="question_text" class="form-label">Question</label>
+            <textarea
+              class="form-control"
+              id="question_text"
+              name="question_text"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="question_image" class="form-label"
+              >Upload Image (Optional)</label
+            >
+            <div class="image-upload-box" id="dropArea">
+              <span class="upload-placeholder" id="uploadPlaceholder">+</span>
+              <img
+                id="previewImage"
+                src="#"
+                alt="Preview"
+                style="display: none"
+              />
+              <button
+                type="button"
+                class="remove-image-btn"
+                id="removeImageBtn"
+                onclick="removeSelectedImage()"
+                style="display: none"
+              >
+                ×
+              </button>
+            </div>
+            <input
+              type="file"
+              id="question_image"
+              name="question_image"
+              accept="image/*"
+            />
+          </div>
+          <input
+            type="hidden"
+            name="remove_image"
+            id="removeImageFlag"
+            value="0"
+          />
+
+          <div class="mb-3">
+            <label for="score" class="form-label">Score</label>
+            <input
+              type="number"
+              class="form-control"
+              id="score"
+              name="score"
+              min="1"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Options</label>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="option_a"
+                  class="form-control"
+                  placeholder="Option A"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="option_b"
+                  class="form-control"
+                  placeholder="Option B"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="option_c"
+                  class="form-control"
+                  placeholder="Option C"
+                  required
+                />
+              </div>
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  name="option_d"
+                  class="form-control"
+                  placeholder="Option D"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="correct_answer" class="form-label"
+              >Correct Answer</label
+            >
+            <select
+              class="form-select"
+              id="correct_answer"
+              name="correct_answer"
+              required
+            >
+              <option value="" disabled selected>Select correct option</option>
+              <option value="A">Option A</option>
+              <option value="B">Option B</option>
+              <option value="C">Option C</option>
+              <option value="D">Option D</option>
+            </select>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Save Question</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeModal()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Question List -->
+<div class="mt-4">
+  {% if questions %}
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Question</th>
+          <th>Options</th>
+          <th>Correct</th>
+          <th>Score</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for q in questions %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ q.question }}</td>
+          <td>
+            A. {{ q.option_a }}<br />
+            B. {{ q.option_b }}<br />
+            C. {{ q.option_c }}<br />
+            D. {{ q.option_d }}
+          </td>
+          <td>{{ q.correct_answer }}</td>
+          <td>{{ q.score }}</td>
+          <td>
+            {% if q.image_path %}
+            <!-- <img src="{{ url_for('admin.question_image', qid=q.qid) }}" alt="question image" style="max-height: 60px;" /> -->
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              onclick="openImageModal('{{ q.qid }}')"
+            >
+              <i class="bi bi-eye"></i>
+            </button>
+            {% else %} - {% endif %}
+          </td>
+          <td>
+            <!-- Add Edit/Delete Buttons if needed -->
+            <button
+              class="btn btn-sm btn-outline-primary"
+              onclick='editQuestion({{ q.qid }}, {{ {
+                  "question": q.question,
+                  "score": q.score,
+                  "option_a": q.option_a,
+                  "option_b": q.option_b,
+                  "option_c": q.option_c,
+                  "option_d": q.option_d,
+                  "correct_answer": q.correct_answer,
+                  "image_path": q.image_path,
+              } | tojson | safe }})'
+            >
+
+              Edit
+            </button>
+
+            <form
+              action="{{ url_for('admin.delete_question', eid=eid, qid=q.qid) }}"
+              method="POST"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+              />
+              <button
+                type="submit"
+                class="btn btn-sm btn-outline-danger"
+                onclick="return confirm('Are you sure you want to delete this question?')"
+              >
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p>No questions have been added for this event yet.</p>
+  {% endif %}
+</div>
+
+<div class="modal" id="imageModel" style="display: none">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-4 bg-white rounded shadow">
+      <div class="modal-header">
+        <h5 class="modal-title">Image Preview</h5>
+        <button
+          type="button"
+          class="btn-close"
+          onclick="closeImageModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <img
+          id="preview-img"
+          style="object-fit: fill; width: 100%; height: 100%"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Style -->
+<style>
+  .fab {
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+  .image-upload-box {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    height: 200px;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: border 0.3s;
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f8f8;
+  }
+
+  .image-upload-box.dragover {
+    border-color: #007bff;
+    background-color: #e8f0fe;
+  }
+
+  .image-upload-box img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .upload-placeholder {
+    color: #aaa;
+    font-size: 2.5rem;
+    user-select: none;
+    position: absolute;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+  .remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    line-height: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+</style>
+
+<!-- Modal Toggle Script -->
+<script>
+  function openModal() {
+    document.getElementById("questionModel").style.display = "block";
+    document.getElementById("preview-img").src = "";
+  }
+
+  function closeModal() {
+    document.getElementById("questionModel").style.display = "none";
+  }
+
+  function openImageModal(qid) {
+    // Update image source from backend
+    const imgElement = document.getElementById("preview-img");
+    imgElement.src = `/admin/question_image/${qid}`; // your route should serve the image
+    document.getElementById("imageModel").style.display = "block";
+  }
+
+  function closeImageModal() {
+    document.getElementById("imageModel").style.display = "none";
+    document.getElementById("preview-img").src = "";
+  }
+
+  window.onclick = function (event) {
+    const modal = document.getElementById("imageModel");
+    if (event.target == modal) {
+      closeImageModal();
+    }
+  };
+
+  window.onclick = function (event) {
+    const modal = document.getElementById("questionModel");
+    if (event.target == modal) {
+      closeModal();
+    }
+  };
+
+  const dropArea = document.getElementById("dropArea");
+  const fileInput = document.getElementById("question_image");
+  const previewImage = document.getElementById("previewImage");
+  const uploadPlaceholder = document.getElementById("uploadPlaceholder");
+  const removeImageBtn = document.getElementById("removeImageBtn");
+
+  dropArea.addEventListener("click", () => fileInput.click());
+
+  dropArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropArea.classList.add("dragover");
+  });
+
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("dragover");
+  });
+
+  dropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropArea.classList.remove("dragover");
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      fileInput.files = e.dataTransfer.files;
+      showImage(file);
+    }
+  });
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file) {
+      showImage(file);
+    }
+  });
+
+  function showImage(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImage.src = e.target.result;
+      previewImage.style.display = "block";
+      uploadPlaceholder.style.display = "none";
+      removeImageBtn.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+    document.getElementById("removeImageFlag").value = "0";
+  }
+
+  function removeSelectedImage() {
+    fileInput.value = "";
+    previewImage.src = "#";
+    previewImage.style.display = "none";
+    uploadPlaceholder.style.display = "block";
+    removeImageBtn.style.display = "none";
+    document.getElementById("removeImageFlag").value = "1";
+  }
+  removeImageBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); // prevents bubbling up to dropArea
+    removeSelectedImage();
+  });
+
+  function editQuestion(qid, data) {
+    // Set form fields
+    document.getElementById("questionModalTitle").textContent = "Edit Question";
+    document.getElementById("question_text").value = data.question;
+    document.getElementById("score").value = data.score;
+    document.querySelector('[name="option_a"]').value = data.option_a;
+    document.querySelector('[name="option_b"]').value = data.option_b;
+    document.querySelector('[name="option_c"]').value = data.option_c;
+    document.querySelector('[name="option_d"]').value = data.option_d;
+    document.getElementById("correct_answer").value = data.correct_answer;
+
+    // Set hidden field for qid
+    let qidField = document.getElementById("qid_field");
+    if (!qidField) {
+      qidField = document.createElement("input");
+      qidField.type = "hidden";
+      qidField.name = "qid";
+      qidField.id = "qid_field";
+      document.querySelector("#questionModel form").appendChild(qidField);
+    }
+    qidField.value = qid;
+
+    // Load image preview if available
+    if (data.image_path) {
+      const imgSrc = `/admin/question_image/${qid}`;
+      console.log("QID: ", qid);
+      previewImage.src = imgSrc;
+      previewImage.style.display = "block";
+      uploadPlaceholder.style.display = "none";
+      removeImageBtn.style.display = "block";
+    } else {
+      removeSelectedImage();
+    }
+
+    // Open modal
+    openModal();
+  }
+</script>

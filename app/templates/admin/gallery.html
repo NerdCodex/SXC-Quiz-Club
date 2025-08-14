@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Gallery</title>
+
+  <!-- Bootstrap CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/global.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/events.css') }}"
+    />
+  <style>
+    .fab {
+      position: fixed;
+      bottom: 60px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      font-size: 24px;
+      background-color: #6a1b1a;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .fab:hover { background-color: #8a1d1f; }
+    .image-upload-box {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background-color: #f8f8f8;
+    }
+    .upload-placeholder { font-size: 2.5rem; color: #aaa; }
+    .remove-image-btn {
+      position: absolute;
+      top: 5px; right: 5px;
+      background-color: #dc3545; color: white;
+      border: none; border-radius: 50%;
+      font-size: 18px; width: 28px; height: 28px;
+    }
+    input[type="file"] { display: none; }
+  </style>
+</head>
+<body>
+
+  {% include 'admin/components/navbar.html' %}
+
+  <!-- Floating Add Button -->
+  <button class="fab" onclick="openAddModal()">
+    <i class="bi bi-plus-lg"></i>
+  </button>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal" id="galleryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h5 class="modal-title" id="galleryModalTitle">Add New Image</h5>
+          <button type="button" class="btn-close" onclick="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{{ url_for('admin.save_image') }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="gid" id="gid_field">
+
+            <div class="mb-3">
+              <label class="form-label">Image Description</label>
+              <textarea class="form-control" name="image_desc" id="image_desc" rows="2" required></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Upload Image</label>
+              <div class="image-upload-box position-relative" id="dropArea">
+                <span id="uploadPlaceholder" class="upload-placeholder">+</span>
+                <img id="previewImage" style="display:none;max-height:100%;max-width:100%;">
+                <button type="button" id="removeImageBtn" class="remove-image-btn" style="display:none;" onclick="removeSelectedImage()">×</button>
+              </div>
+              <input type="file" id="gallery_image" name="image_file" accept="image/*">
+            </div>
+
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Table -->
+  <div class="container mt-4">
+    {% if images %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Preview</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for img in images %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+              <button class="btn btn-outline-secondary btn-sm" onclick="openImageModal({{ img.gid }})">
+                <i class="bi bi-eye"></i>
+              </button>
+            </td>
+            <td>{{ img.image_desc }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" 
+                onclick="openEditModal({{ img.gid }}, '{{ img.image_desc|escape }}')">
+                Edit
+              </button>
+              <form action="{{ url_for('admin.delete_image', gid=img.gid) }}" method="POST" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this image?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No images uploaded yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Image View Modal -->
+  <div class="modal" id="imageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content p-4">
+        <div class="modal-header">
+          <h5 class="modal-title">Image Preview</h5>
+          <button type="button" class="btn-close" onclick="closeImageModal()"></button>
+        </div>
+        <div class="modal-body">
+          <img id="preview-img" style="width:100%;height:auto;object-fit:contain;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('gallery_image');
+    const previewImage = document.getElementById('previewImage');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const removeImageBtn = document.getElementById('removeImageBtn');
+
+    dropArea.addEventListener('click', () => fileInput.click());
+    dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.classList.add('dragover'); });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('dragover'));
+    dropArea.addEventListener('drop', e => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) { fileInput.files = e.dataTransfer.files; showImage(file); }
+    });
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) showImage(file);
+    });
+
+    function showImage(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        previewImage.src = e.target.result;
+        previewImage.style.display = 'block';
+        uploadPlaceholder.style.display = 'none';
+        removeImageBtn.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeSelectedImage() {
+      fileInput.value = '';
+      previewImage.src = '';
+      previewImage.style.display = 'none';
+      uploadPlaceholder.style.display = 'block';
+      removeImageBtn.style.display = 'none';
+    }
+
+    function openAddModal() {
+      document.getElementById('galleryModalTitle').textContent = 'Add New Image';
+      document.getElementById('gid_field').value = '';
+      document.getElementById('image_desc').value = '';
+      removeSelectedImage();
+      document.getElementById('galleryModal').style.display = 'block';
+    }
+
+    function openEditModal(gid, desc) {
+      document.getElementById('galleryModalTitle').textContent = 'Edit Image';
+      document.getElementById('gid_field').value = gid;
+      document.getElementById('image_desc').value = desc;
+      previewImage.src = `/admin/gallery/image/${gid}`;
+      previewImage.style.display = 'block';
+      uploadPlaceholder.style.display = 'none';
+      removeImageBtn.style.display = 'block';
+      fileInput.value = '';
+      document.getElementById('galleryModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('galleryModal').style.display = 'none';
+    }
+
+    function openImageModal(gid) {
+      document.getElementById('preview-img').src = `/admin/gallery/image/${gid}`;
+      document.getElementById('imageModal').style.display = 'block';
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

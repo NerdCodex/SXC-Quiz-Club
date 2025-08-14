@@ -1,0 +1,28 @@
+{% extends 'components/base.html' %} 
+{% block title %}Sxc Quiz Club - Admin 
+{% endblock %} {% block csslink %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{{ url_for('static', filename='styles/download.css') }}"
+/>
+{% endblock %} {% block content %}
+
+<div class="box">
+  <h2><b>Admin Login</b></h2>
+  <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <label for="email">EMAIL</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="password">PASSWORD</label>
+    <input type="password" id="password" name="password" required />
+
+    <button type="submit">Login</button>
+    <br />
+    {% if error %}
+    <p style="color: rgb(254, 254, 254)">{{ error }}</p>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

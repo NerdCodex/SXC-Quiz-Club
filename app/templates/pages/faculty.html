@@ -1,0 +1,112 @@
+{% extends 'components/base.html' %} 
+{% block title %}Sxc Quiz Club - Home {% endblock %} 
+{% block csslink %} 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/faculty.css') }}"/>
+{% endblock %}
+
+{% block content %}
+  <!-- Chief Patron -->
+  <div class="container py-5">
+    <h2 class="text-center section-title">Chief Patron</h2>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Rector -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/rector.png') }}" alt="Rev. Dr. S. Ignacimuthu, S.J." class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Rev. Dr. S. Ignacimuthu, S.J.</div>
+            <div class="faculty-role">Rector of St. Xavier’s Institutions</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/rectormessage.php" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Patrons -->
+  <div class="container py-5">
+    <h2 class="text-center section-title">Patrons</h2>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Secretary -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/secretary.jpg') }}" alt="Rev. Fr. Dr. S. Lazar, S.J." class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Rev. Fr. Dr. S. Lazar, S.J.</div>
+            <div class="faculty-role">Secretary</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/secretarymessage.php" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Principal -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/principal.png') }}" alt="Rev. Fr. Dr. Godwin Rufus, S.J." class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Rev. Fr. Dr. Godwin Rufus, S.J.</div>
+            <div class="faculty-role">Principal</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/principalmessage.php" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Advisor -->
+  <div class="container py-5">
+    <h2 class="text-center section-title">Advisor</h2>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Deputy Principal -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/deputy.png') }}" alt="Dr. A. Lourdusamy" class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Dr. A. Lourdusamy</div>
+            <div class="faculty-role">Deputy Principal</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/deputymessage.php" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Faculty Section -->
+  <div class="container py-5">
+    <h2 class="text-center section-title">Co-ordinators</h2>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Faculty Card 1 -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/faculty1.png') }}" alt="Dr. T. Shamila Joster" class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Dr. T. Shamila Joster</div>
+            <div class="faculty-role">Co-ordinator, SXC QUIZ CLUB</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/dept/Tamil/faculty/Shift%20II/pdf/CV-Tamil-Dr.%20SHAMILA%20JOSTER%20.%20T.pdf" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faculty Card 2 -->
+      <div class="col-lg-4 col-md-6 col-sm-10">
+        <div class="faculty-card">
+          <img src="{{ url_for('static', filename='resources/faculty/faculty2.jpg') }}" alt="DR. J. REXY" class="faculty-img" />
+          <div class="card-body text-center">
+            <div class="faculty-name">Dr. J. Rexy</div>
+            <div class="faculty-role">Assistant Co-ordinator, SXC QUIZ CLUB</div>
+            <a target="_blank" href="http://www.stxavierstn.edu.in/dept/ComputerScience/faculty/Shift%20II/pdf/CV%20-%20Dr.%20Rexy%20-%20Comp.%20Sci.pdf" class="btn btn-profile">PROFILE</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

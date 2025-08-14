@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ event.event_name }} - Quiz</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='styles/global.css') }}"
+    />
+    <style>
+      body {
+        background-color: #f9f9f9;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+      }
+
+      .event-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        margin-top: 20px;
+        margin-bottom: 40px;
+      }
+
+      .event-card h2 {
+        font-weight: bold;
+        color: #6a1b1f;
+      }
+
+      .form-label {
+        font-weight: 600;
+      }
+
+      .form-control {
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+      }
+
+      .btn {
+        background-color: #6a1b1f;
+        color: white;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+      }
+
+      .btn:hover {
+        background-color: #5c171c;
+      }
+
+      .question-box {
+        background-color: #f8f8f8;
+        border-radius: 6px;
+        border: 2px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .question-box h5 {
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .img-fluid {
+        
+        max-width: 100%;
+        border-radius: 6px;
+        margin-bottom: 10px;
+      }
+
+      .option-container {
+        display: block;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        background-color: #fff;
+      }
+
+      .option-container:hover {
+        background-color: #f2f2f2;
+        border-color: #999;
+      }
+
+      .option-container input[type="radio"] {
+        display: none;
+      }
+
+      .option-container.selected {
+        background-color: #ffecec;
+        border-color: #6a1b1f;
+      }
+
+      .option-container .label-text {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .warning-message {
+        color: #dc3545;
+        font-size: 14px;
+        font-weight: 500;
+        margin-top: 10px;
+        padding: 8px;
+        background-color: #fff3f4;
+        border-radius: 4px;
+        display: none;
+      }
+
+      .question-box.warning {
+        border-color: #dc3545;
+        background-color: #fff3f4;
+        box-shadow: 0 0 8px rgba(220, 53, 69, 0.3);
+      }
+
+      @media screen and (max-width: 576px) {
+        .event-card {
+          padding: 20px;
+        }
+
+        .btn {
+          width: 100%;
+        }
+
+        h2 {
+          font-size: 1.5rem;
+        }
+
+        .option-container .label-text {
+          font-size: 15px;
+        }
+      }
+      .question-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+
+    </style>
+  </head>
+  <body>
+    {% include 'components/navbar.html' %}
+
+    {% set flashed = get_flashed_messages(with_categories=true) %}
+    {% if flashed|selectattr("0", "equalto", "danger")|list|length > 0 %}
+    <!-- Flash Message Modal -->
+    <div
+      class="modal fade"
+      id="flashModal"
+      tabindex="-1"
+      aria-labelledby="flashModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content border-danger">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title" id="flashModalLabel">Submission Error</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            {% for category, message in flashed %}
+              {% if category == 'danger' %}
+                <p>{{ message }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Body -->
+    <div class="container">
+      <div class="event-card">
+        <div class="content text-center mb-4">
+          <h2>{{ event.event_name }}</h2>
+        </div>
+        <form method="POST" id="quizForm" onsubmit="return validateForm(event)">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div class="mb-3">
+            <label class="form-label">Name*</label>
+            <input type="text" name="name" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email*</label>
+            <input type="email" name="email" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Reg. No (If you are a student)</label>
+            <input type="text" name="regno" class="form-control" />
+          </div>
+
+          <hr class="my-4" />
+
+          {% for q in questions %}
+          <div class="question-box" data-qid="{{ q.qid }}">
+            <h5 style="justify-content: center;">Q{{ loop.index }}. {{ q.question }}</h5>
+            {% if q.image_path %}
+            <img class="img-fluid rounded mb-2" src="{{ url_for('main.public_question_image', qid=q.qid) }}" alt="Question Image">
+
+            {% endif %}
+            <label class="option-container">
+              <input type="radio" name="qid_{{ q.qid }}" value="A" />
+              <span class="label-text">{{ q.option_a }}</span>
+            </label>
+            <label class="option-container">
+              <input type="radio" name="qid_{{ q.qid }}" value="B" />
+              <span class="label-text">{{ q.option_b }}</span>
+            </label>
+            <label class="option-container">
+              <input type="radio" name="qid_{{ q.qid }}" value="C" />
+              <span class="label-text">{{ q.option_c }}</span>
+            </label>
+            <label class="option-container">
+              <input type="radio" name="qid_{{ q.qid }}" value="D" />
+              <span class="label-text">{{ q.option_d }}</span>
+            </label>
+            <div class="warning-message">
+              Please select an option for this question.
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Show modal if flash message is present
+      window.onload = function () {
+        {% if flashed|selectattr("0", "equalto", "danger")|list|length > 0 %}
+        const modal = new bootstrap.Modal(document.getElementById('flashModal'));
+        modal.show();
+        {% endif %}
+      };
+
+      // Handle option selection styling
+      document.querySelectorAll('.question-box').forEach(box => {
+        const radios = box.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+          radio.addEventListener('change', () => {
+            box.querySelectorAll('.option-container').forEach(label => label.classList.remove('selected'));
+            radio.closest('.option-container').classList.add('selected');
+            box.classList.remove('warning');
+            box.querySelector('.warning-message').style.display = 'none';
+          });
+        });
+      });
+
+      // Form validation
+      function validateForm(event) {
+        event.preventDefault();
+        let isValid = true;
+        const questionBoxes = document.querySelectorAll('.question-box');
+
+        questionBoxes.forEach(box => {
+          box.classList.remove('warning');
+          box.querySelector('.warning-message').style.display = 'none';
+
+          const radios = box.querySelectorAll('input[type="radio"]');
+          const isChecked = Array.from(radios).some(radio => radio.checked);
+          if (!isChecked) {
+            box.classList.add('warning');
+            box.querySelector('.warning-message').style.display = 'block';
+            isValid = false;
+          }
+        });
+
+        if (isValid) {
+          document.getElementById('quizForm').submit();
+        } else {
+          const firstUnanswered = document.querySelector('.question-box.warning');
+          if (firstUnanswered) {
+            firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+
+        return isValid;
+      }
+    </script>
+  </body>
+</html>

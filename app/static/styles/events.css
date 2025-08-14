@@ -1,0 +1,218 @@
+.fab {
+  position: fixed;
+  bottom: 60px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  font-size: 24px;
+  background-color: #6a1b1a;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.fab:hover {
+  background-color: #6a1b1f;
+}
+
+.fab:active {
+  background-color: #6a1b1f;
+}
+
+.btn {
+  background-color: #6a1b1f;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #6a1b1f;
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding: 30px;
+}
+
+.event-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: fill;
+}
+
+.event-card .content {
+  padding: 1rem;
+}
+
+.event-card .content h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
+.event-card .content p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  max-height: 3.2em; /* Adjust depending on line height */
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  background: white;
+  margin: 5% auto;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-content form input,
+.modal-content form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content form label {
+  font-weight: bold;
+}
+
+.custom-tabs .nav-link {
+  color: #6a1b1f;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  margin-right: 5px;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.3s ease;
+}
+
+.custom-tabs .nav-link:hover {
+  background-color: #e9ecef;
+}
+
+.custom-tabs .nav-link.active {
+  background-color: #6a1b1f;
+  color: #fff;
+}
+
+.custom-tabs .nav-link {
+  color: #6a1b1f;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  margin-right: 5px;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.3s ease;
+}
+
+.custom-tabs .nav-link.active {
+  background-color: #6a1b1f;
+  color: white;
+}
+
+.image-upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  height: 200px;
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: border 0.3s;
+  position: relative;
+  overflow: hidden;
+  background-color: #f8f8f8;
+}
+
+.image-upload-box.dragover {
+  border-color: #007bff;
+  background-color: #e8f0fe;
+}
+
+.image-upload-box img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.upload-placeholder {
+  color: #aaa;
+  font-size: 2.5rem;
+  user-select: none;
+  position: absolute;
+}
+
+input[type="file"] {
+  display: none;
+}
+.remove-image-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 18px;
+  width: 28px;
+  height: 28px;
+  line-height: 0;
+  cursor: pointer;
+  z-index: 2;
+}

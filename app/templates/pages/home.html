@@ -1,0 +1,260 @@
+{% extends 'components/base.html' %} 
+{% block title %}Sxc Quiz Club - Home {% endblock %} 
+{% block csslink %} 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/home.css') }}"/>
+{% endblock %}
+{% block content %}
+    <div class="event-logo-bar d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+        <img src="{{ url_for('static', filename='resources/college-logo.png') }}" alt="College Logo" class="college-logo"/>   
+        </div>
+  <div class="scrolling-text-container">
+    <div class="scrolling-text">
+      Welcome to the SXC Quiz Club! 
+      🇮🇳 Independence Day Quiz – Aug 15 | 🏆 National Sports Day – Aug 29 | 👨‍🏫 Teacher’s Day Quiz – Sep 5 | 📚 International Literacy Day Quiz – Sep 8 | 🌍 World Tourism Day Quiz – Sep 27 | ✌️ International Day of Non-Violence Quiz – Oct 2 | 🎓 World Students’ Day Quiz – Oct 15 | 👶 Children’s Day Quiz – Nov 14 | ⛪ St. Xavier’s Feast Quiz – Dec 3 | 🧑‍🎓 National Youth Day Quiz – Jan 12 | 🗳️ National Voters’ Day Quiz – Jan 25 | 🌐 Safer Internet Day – Feb 11 | 🧪 National Science Day Quiz – Feb 28
+    </div>
+  </div>
+</div>
+
+    <!-- Carousel -->
+    <div
+    id="mainCarousel"
+    class="carousel slide carousel-fade"
+    data-bs-ride="carousel"
+    data-bs-interval="3000"
+    >
+    <div class="carousel-indicators">
+        <button
+        type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide-to="0"
+        class="active"
+        aria-current="true"
+        aria-label="Slide 1"
+        ></button>
+        <button
+        type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide-to="1"
+        aria-label="Slide 2"
+        ></button>
+        <button
+        type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide-to="2"
+        aria-label="Slide 3"
+        ></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='resources/slider1.jpg') }}" class="d-block w-100" alt="Quiz Image 1" />
+        <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
+            <h3 class="text-warning fw-bold">INCOQU'25</h3>
+        </div>
+        </div>
+        <div class="carousel-item">
+        <img src="{{ url_for('static', filename='resources/slider2.jpg') }}" class="d-block w-100" alt="Quiz Image 2" />
+        <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
+            <h3 class="text-warning fw-bold">INCOQU'25</h3>
+        </div>
+        </div>
+        <div class="carousel-item">
+        <img src="{{ url_for('static', filename='resources/slider3.jpg') }}" class="d-block w-100" alt="Quiz Image 3" />
+        <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
+            <h3 class="text-warning fw-bold">INCOQU'25</h3>
+        </div>
+        </div>
+    </div>
+    <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide="prev"
+    >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#mainCarousel"
+        data-bs-slide="next"
+    >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+
+
+
+    <!-- About Section -->
+    <section class="about-section py-5">
+    <div class="container">
+        <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+            <div class="card-body">
+                <h3 style="display: block; text-align: center;">About the College</h3>
+                <p style="text-align: justify;" class="card-text">
+                St. Xavier's College was established at Palayamkottai in 1923 by
+                Jesuit Fathers of the Jesuit Madurai Province with an aim of
+                preparing generations of students for a happy, healthy and
+                harmonious life. The motto of the college is Veritate Lumen et
+                Vita (Light and Life through Truth). It is a grant-in-aid
+                institution recognized by the UGC Act under sections 2(f) and
+                12(B). The College is affiliated to the Manonmaniam Sundaranar
+                University. In recognition of its service and excellence, the
+                College was granted autonomy in 1987. The National Assessment and
+                Accreditation Council (NAAC) in 2019 at A++ grade with a CGPA of
+                3.66 out of 4 in Cycle IV. The UGC awarded the status of "College
+                with Potential for Excellence" to our college in 2004 and again in
+                2010 and 2014. STAR College scheme has been awarded by DBT, Govt.
+                of India. In the ranking conducted by the National Institutional
+                Ranking Framework (NIRF), our college got 36th rank in College
+                Category in 2024. Today more than 4600 students study in 15
+                Postgraduate and 21 Undergraduate departments. Ph.D. Research is
+                carried out in 12 Departments.
+                </p>
+            </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+            <div class="card-body">
+                <h3 style="display: block; text-align: center;">
+                About SXC Quiz Club
+                </h3>
+                <p style="text-align: justify;" class="card-text">
+                A quiz club at an esteemed institution like St. Xavier's College
+                enhances the academic and extracurricular experience of its
+                members by encouraging intellectual development and camaraderie
+                via cultivating a culture of knowledge-sharing, curiosity and
+                friendly competition. Inter-collegiate quiz competitions are
+                events where teams or individuals from different colleges compete
+                against each other to test their knowledge, skills and expertise
+                on various topics. These competitions serve as platforms for
+                students to showcase their academic prowess, critical thinking
+                abilities and general knowledge while fostering healthy
+                competition and sociability among educational institutions. To get
+                into lucrative career, the fresh graduates need to compete with
+                their fellow contestants in the competitive examinations.
+                </p>
+            </div>
+            </div>
+        </div>        
+        </div>
+    </div>
+    </section>
+
+    <!-- Objectives Section -->
+    <section class="objectives-section">
+    <div class="container">
+        <h2>Objectives of the SXC Quiz Club</h2>
+        <table class="table table-borderless align-middle">
+        <tbody>
+            <tr>
+            <td class="text-center" style="width: 40px">🎯</td>
+            <td>
+                To enhance the knowledge quotient in various dimensions and to
+                kindle interest in the minds of our students.
+            </td>
+            </tr>
+            <tr>
+            <td class="text-center">🎯</td>
+            <td>To create a group of young minds with quizzing talent.</td>
+            </tr>
+            <tr>
+            <td class="text-center">🎯</td>
+            <td>
+                To lend hands to beginners and lead them to the world of knowledge.
+            </td>
+            </tr>
+            <tr>
+            <td class="text-center">🎯</td>
+            <td>
+                To guide on specific areas of quizzing and encourage to participate
+                in quiz competitions.
+            </td>
+            </tr>
+            <tr>
+            <td class="text-center">🎯</td>
+            <td>
+                To encourage and conduct periodical quizzes on specific topics by
+                the SXC Quiz Club members to the students via online.
+            </td>
+            </tr>
+            <tr>
+            <td class="text-center">🎯</td>
+            <td>
+                To let the members be aware of the quizzing events happening in
+                nearby as well as far away colleges and encourage them to
+                participate.
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </section>
+
+    <section class="about-section py-5">
+  <div class="container">
+    <div class="row g-2">
+      <!-- Annual Report on Left -->
+      <div class="col-md-8">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <h3 class="text-center">Annual Report (2024 - 2025)</h3>
+            <iframe src="{{ url_for('static', filename='resources/Annual Report (2025).pdf') }}"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Events Carousel on Right -->
+      <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-0">
+          <div class="card-body">
+            <h3 class="text-center">Upcoming Events</h3>
+            
+            <div id="eventCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+              <div class="carousel-inner">
+                {% for event in upcoming_events %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                  <img src="data:image/jpeg;base64,{{ event.banner_base64 }}" 
+                       alt="{{ event.event_name }}" 
+                       class="d-block w-100 rounded mb-2">
+                  <div class="text-center">
+                    <h5 class="fw-bold text-dark">{{ event.event_date.strftime('%B %d, %Y') }}</h5>
+                    <p class="fw-semibold">{{ event.event_name }}</p>
+                    <p class="text-muted" style="font-size: 0.9rem;">
+                      {{ event.event_description }}
+                    </p>
+                    <a href="{{ request.url_root }}quiz/{{ event.slugurl }}" 
+                       class="btn btn-warning fw-bold px-4 py-2">
+                       View
+                    </a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Optional Controls -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#eventCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#eventCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quiz Modal -->
+{% endblock %}
