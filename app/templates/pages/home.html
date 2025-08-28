@@ -256,5 +256,43 @@
   </div>
 </section>
 
-<!-- Quiz Modal -->
+<div class="modal fade" id="quizModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-2"> <!-- Reduced padding from p-4 to p-2 -->
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">SXC Quiz Club Inauguration Invitation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-2"> <!-- Reduced padding from default to p-2 -->
+        <div class="container-fluid">
+
+          <!-- Logo & Title -->
+          <div class="d-flex align-items-center justify-content-center gap-3 mb-4">
+            <img src="{{ url_for('static', filename='resources/quizclub.png') }}" alt="Quiz Club Logo" class="quizclub-logo" style="height:50px;">
+            <span class="quiz-title fw-bold fs-5">SXC QUIZ CLUB</span>
+          </div>
+
+          <!-- Invitation Image -->
+          <div class="text-center" style="margin: 10px 0;">
+            <img style="width: 100%; height: auto; object-fit: contain; margin: 0;" src="{{ url_for('static', filename='resources/invitation.jpg') }}" alt="SXC Quiz Club Invitation" class="img-fluid">
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var quizModal = new bootstrap.Modal(document.getElementById('quizModal'));
+  quizModal.show(); // Show modal on page load
+});
+</script>
+
 {% endblock %}
